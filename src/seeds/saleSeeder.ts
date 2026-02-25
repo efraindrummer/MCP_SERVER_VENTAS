@@ -89,11 +89,18 @@ export const seedSales = async ({
       
     } catch (error) {
       await t.rollback();
-      console.error(`❌ Error creando venta ${i + 1}:`, error);
-      // Continuar con la siguiente venta
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Error creando venta ${i + 1}: ${msg}`);
+      if (createdSales.length === 0 && i >= 2) {
+        throw new Error(`Fallo repetido al crear ventas. Detalle: ${msg}`);
+      }
     }
   }
-  
+
+  if (createdSales.length === 0) {
+    throw new Error('No se pudo crear ninguna venta. Revisa los errores de arriba.');
+  }
+
   console.log(`✅ ${createdSales.length} ventas creadas exitosamente`);
   return createdSales;
 };

@@ -4,6 +4,8 @@ import { clearTables, delay } from '../utils/seedHelpers';
 import { seedClients, createTestClients } from './clientSeeder';
 import { seedProducts, createTestProducts } from './productSeeder';
 import { seedSales, createTestSales } from './saleSeeder';
+// Registrar modelos y asociaciones antes de hacer cualquier operación
+import '../models/index';
 
 dotenv.config();
 
@@ -59,7 +61,11 @@ export const runSeeds = async (options: SeedOptions = {}): Promise<void> => {
     // Conectar a la base de datos
     await sequelize.authenticate();
     console.log('✅ Conexión a BD establecida\n');
-    
+
+    // Sincronizar esquema (crea tablas si no existen, no borra datos)
+    await sequelize.sync({ force: false });
+    console.log('✅ Esquema sincronizado\n');
+
     // Limpiar tablas si se solicita
     if (config.clean) {
       await clearTables();
@@ -88,13 +94,13 @@ export const runSeeds = async (options: SeedOptions = {}): Promise<void> => {
     
     // 4. Datos específicos para testing (opcional)
     if (config.includeTestData) {
-      console.log('\n🧪 Creando datos de prueba específicos...');
+      console.log('\n Creando datos de prueba específicos...');
       
       const testClients = await createTestClients();
       const testProducts = await createTestProducts();
       await createTestSales(testClients, testProducts);
       
-      console.log('✅ Datos de prueba creados');
+      console.log('Datos de prueba creados');
     }
     
     // Resumen final
@@ -107,10 +113,10 @@ export const runSeeds = async (options: SeedOptions = {}): Promise<void> => {
     const totalRevenue = sales.reduce((sum, sale) => sum + Number(sale.sale_total), 0);
     console.log(`  💰 Ingresos totales: $${totalRevenue.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`);
     
-    console.log('\n🎉 ¡Población completada exitosamente!');
+    console.log('\n¡Población completada exitosamente!');
     
   } catch (error) {
-    console.error('❌ Error durante la población:', error);
+    console.error('Error durante la población:', error);
     throw error;
   } finally {
     // Cerrar conexión
