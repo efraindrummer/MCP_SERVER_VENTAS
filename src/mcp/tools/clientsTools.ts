@@ -4,7 +4,7 @@ import { sequelize } from '../../config/database';
 import { QueryTypes } from 'sequelize';
 
 /**
- * 👥 Resumen de clientes
+ * Resumen de clientes
  */
 export const getClientsSummary = async (): Promise<object> => {
   const [stats] = await sequelize.query(`
@@ -24,7 +24,7 @@ export const getClientsSummary = async (): Promise<object> => {
 };
 
 /**
- * 🏆 Mejores clientes por volumen de compras
+ * Mejores clientes por volumen de compras
  */
 export const getTopClients = async (limit: number = 10): Promise<object> => {
   const results = await sequelize.query(`
@@ -55,7 +55,7 @@ export const getTopClients = async (limit: number = 10): Promise<object> => {
 };
 
 /**
- * 📊 Clientes por frecuencia de compra
+ * Clientes por frecuencia de compra
  */
 export const getClientsByPurchaseFrequency = async (): Promise<object> => {
   const results = await sequelize.query(`

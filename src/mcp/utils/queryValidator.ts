@@ -32,7 +32,7 @@ export const validateCustomQuery = (query: string): { valid: boolean; error?: st
   return { valid: true };
 };
 
-// ✅ Esquemas Zod compatibles con Zod v4
+// Esquemas Zod compatibles con Zod v4
 // Nota: .min() y .max() ahora requieren mensaje de error como segundo parámetro
 export const Schemas = {
   dateRange: z.object({

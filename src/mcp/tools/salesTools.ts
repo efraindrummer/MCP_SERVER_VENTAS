@@ -6,7 +6,7 @@ import { DateRangeInput, PaginationInput, TopProductsInput } from '../utils/quer
 import { QueryTypes } from 'sequelize';
 
 /**
- * 📊 Resumen general de ventas
+ * Resumen general de ventas
  */
 export const getSalesSummary = async (): Promise<object> => {
   const [summary] = await sequelize.query(`
@@ -30,7 +30,7 @@ export const getSalesSummary = async (): Promise<object> => {
 };
 
 /**
- * 📈 Ventas por rango de fechas
+ * Ventas por rango de fechas
  */
 export const getSalesByDateRange = async (
   input: DateRangeInput & PaginationInput
@@ -91,7 +91,7 @@ export const getSalesByDateRange = async (
 };
 
 /**
- * 🏆 Productos más vendidos
+ * Productos más vendidos
  */
 export const getTopProducts = async (input: TopProductsInput): Promise<object> => {
   const { limit = 10, min_sales = 1 } = input;
@@ -125,7 +125,7 @@ export const getTopProducts = async (input: TopProductsInput): Promise<object> =
 };
 
 /**
- * 📅 Ventas agrupadas por período (para gráficos)
+ * Ventas agrupadas por período (para gráficos)
  */
 export const getRevenueByPeriod = async (
   period: 'day' | 'week' | 'month' = 'day',
@@ -175,7 +175,7 @@ export const getRevenueByPeriod = async (
 };
 
 /**
- * 🔍 Búsqueda flexible de ventas
+ * Búsqueda flexible de ventas
  */
 export const searchSales = async (
   searchTerm: string,

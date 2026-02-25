@@ -4,7 +4,7 @@ import { sequelize } from '../../config/database';
 import { QueryTypes } from 'sequelize';
 
 /**
- * 📦 Inventario actual con alertas de stock bajo
+ * Inventario actual con alertas de stock bajo
  */
 export const getInventoryStatus = async (lowStockThreshold: number = 10): Promise<object> => {
   const products = await Product.findAll({
@@ -42,7 +42,7 @@ export const getInventoryStatus = async (lowStockThreshold: number = 10): Promis
 };
 
 /**
- * 💰 Productos por categoría de precio
+ * Productos por categoría de precio
  */
 export const getProductsByPriceRange = async (): Promise<object> => {
   const ranges = await sequelize.query(`
@@ -76,7 +76,7 @@ export const getProductsByPriceRange = async (): Promise<object> => {
 };
 
 /**
- * 🔄 Productos con más rotación (ventas / stock)
+ * Productos con más rotación (ventas / stock)
  */
 export const getProductsTurnover = async (limit: number = 10): Promise<object> => {
   const results = await sequelize.query(`
