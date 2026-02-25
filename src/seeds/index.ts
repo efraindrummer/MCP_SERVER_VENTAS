@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { sequelize } from '../config/database';
-import { clearTables, delay } from '../utils/seedHelpers';
+import { clearTables, dropStaleSchema } from '../utils/seedHelpers';
 import { seedClients, createTestClients } from './clientSeeder';
 import { seedProducts, createTestProducts } from './productSeeder';
 import { seedSales, createTestSales } from './saleSeeder';
@@ -61,6 +61,9 @@ export const runSeeds = async (options: SeedOptions = {}): Promise<void> => {
     // Conectar a la base de datos
     await sequelize.authenticate();
     console.log('✅ Conexión a BD establecida\n');
+
+    // Eliminar tablas/FKs obsoletas de versiones anteriores
+    await dropStaleSchema();
 
     // Sincronizar esquema (crea tablas si no existen, no borra datos)
     await sequelize.sync({ force: false });

@@ -1,17 +1,48 @@
 import { sequelize } from '../config/database';
 
 /**
+ * Elimina tablas y FK constraints obsoletas de versiones anteriores.
+ * Esto evita conflictos cuando la BD tiene restos de esquemas anteriores.
+ */
+export const dropStaleSchema = async (): Promise<void> => {
+  console.log('🗑️  Eliminando esquema obsoleto...');
+
+  // Eliminar FKs huérfanas en sales que apunten a tablas viejas
+  const [rows] = await sequelize.query(`
+    SELECT c.conname
+    FROM pg_constraint c
+    JOIN pg_class r ON r.oid = c.conrelid
+    JOIN pg_class f ON f.oid = c.confrelid
+    WHERE r.relname = 'sales' AND c.contype = 'f' AND f.relname != 'clients'
+  `);
+  const constraints = rows as { conname: string }[];
+
+  for (const row of constraints) {
+    await sequelize.query(`ALTER TABLE sales DROP CONSTRAINT IF EXISTS "${row.conname}"`);
+    console.log(`  ✅ FK eliminada: ${row.conname}`);
+  }
+
+  // Eliminar tablas obsoletas si existen
+  const staleTables = ['detalle_ventas', 'detail_sale', 'client'];
+  for (const table of staleTables) {
+    await sequelize.query(`DROP TABLE IF EXISTS "${table}" CASCADE`);
+  }
+
+  console.log('✅ Esquema obsoleto eliminado');
+};
+
+/**
  * Limpia todas las tablas en orden inverso de dependencias
  */
 export const clearTables = async (): Promise<void> => {
   console.log('🧹 Limpiando tablas...');
-  
+
   // Orden importante: primero las que tienen foreign keys
   await sequelize.query('TRUNCATE TABLE sale_details RESTART IDENTITY CASCADE');
   await sequelize.query('TRUNCATE TABLE sales RESTART IDENTITY CASCADE');
   await sequelize.query('TRUNCATE TABLE products RESTART IDENTITY CASCADE');
   await sequelize.query('TRUNCATE TABLE clients RESTART IDENTITY CASCADE');
-  
+
   console.log('✅ Tablas limpiadas');
 };
 

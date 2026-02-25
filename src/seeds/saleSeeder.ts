@@ -34,7 +34,7 @@ export const seedSales = async ({
     try {
       // Seleccionar cliente aleatorio
       const client = faker.helpers.arrayElement(clients);
-      
+
       // Seleccionar 1-5 productos para esta venta
       const saleProducts = randomSample(products, randomInt(1, 5));
       
