@@ -1,9 +1,16 @@
 #!/usr/bin/env node
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { createMCPServer } from './tools/index';
-import dotenv from 'dotenv';
 
-dotenv.config();
+// Silenciar stdout temporalmente: dotenv v17 imprime logs en stdout que rompen el protocolo MCP stdio
+const _origWrite = process.stdout.write.bind(process.stdout);
+(process.stdout.write as any) = () => true;
+
+// Cargar dotenv y módulos (database.ts también llama dotenv.config())
+require('dotenv').config();
+const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
+const { createMCPServer } = require('./tools/index');
+
+// Restaurar stdout para el protocolo MCP
+process.stdout.write = _origWrite;
 
 const startMCPServer = async () => {
   console.error('Iniciando MCP Server para Ventas...');
